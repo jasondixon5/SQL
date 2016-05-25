@@ -4,6 +4,11 @@
 
 HAVING is like WHERE, only it happens after the COUNT value has been computed.
 
+See:
 http://stackoverflow.com/questions/2330840/mysql-invalid-use-of-group-function
 
-Also see defect percentage in evaluations example.
+Also see:
+http://stackoverflow.com/questions/20025757/error-1111-hy000-invalid-use-of-group-function
+
+
+Also: defect percentage in evaluations example.
