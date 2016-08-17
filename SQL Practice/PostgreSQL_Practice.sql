@@ -2,7 +2,10 @@
 https://pgexercises.com/questions/
 */
 
-/* How can you produce a list of the start times for bookings for tennis courts, for the date '2012-09-21'? Return a list of start time and facility name pairings, ordered by the time.*/
+/* How can you produce a list of the start times for bookings for tennis courts, 
+for the date '2012-09-21'? 
+Return a list of start time and facility name pairings, 
+ordered by the time.*/
 
 --Original Answer
 SELECT starttime as start, name FROM cd.facilities as fac
@@ -25,7 +28,9 @@ bookings.starttime >= '2012-09-21' AND
 bookings.starttime < '2012-09-22'
 ORDER BY starttime;
 
-/*How can you output a list of all members who have recommended another member? Ensure that there are no duplicates in the list, and that results are ordered by (surname, firstname).*/
+/*How can you output a list of all members who have recommended another member? 
+Ensure that there are no duplicates in the list, 
+and that results are ordered by (surname, firstname).*/
 
 --Original answer
 SELECT DISTINCT a.firstname as firstname, a.surname as surname FROM cd.members as a
@@ -40,7 +45,8 @@ INNER JOIN cd.members m2
 ON m1.memid = m2.recommendedby
 ORDER BY m1.surname, m1.firstname
 
-/*How can you output a list of all members, including the individual who recommended them (if any)? Ensure that results are ordered by (surname, firstname).*/
+/*How can you output a list of all members, including the individual who recommended them 
+(if any)? Ensure that results are ordered by (surname, firstname).*/
 
 --Original answer
 SELECT a.firstname as memfname, a.surname as memsname,
@@ -58,7 +64,9 @@ LEFT JOIN cd.members m2
 ON m1.recommendedby = m2.memid
 ORDER BY m1.surname, m1.firstname;
 
-/*How can you produce a list of all members who have used a tennis court? Include in your output the name of the court, and the name of the member formatted as a single column. Ensure no duplicate data, and order by the member name.*/
+/*How can you produce a list of all members who have used a tennis court? 
+Include in your output the name of the court, and the name of the member 
+formatted as a single column. Ensure no duplicate data, and order by the member name.*/
 
 --Original answer
 SELECT DISTINCT concat_ws(' ',firstname, surname) as member, cd.facilities.name as facility
@@ -79,7 +87,13 @@ ON b.facid = f.facid
 WHERE b.facid IN (0, 1)
 ORDER BY member;
 
-/*How can you produce a list of bookings on the day of 2012-09-14 which will cost the member (or guest) more than $30? Remember that guests have different costs to members (the listed costs are per half-hour 'slot'), and the guest user is always ID 0. Include in your output the name of the facility, the name of the member formatted as a single column, and the cost. Order by descending cost, and do not use any subqueries.*/
+/*How can you produce a list of bookings on the day of 2012-09-14 which will 
+cost the member (or guest) more than $30? Remember that guests have different 
+costs to members (the listed costs are per half-hour 'slot'), 
+and the guest user is always ID 0. 
+Include in your output the name of the facility, 
+the name of the member formatted as a single column, and the cost. 
+Order by descending cost, and do not use any subqueries.*/
 
 --First exercise that I hadn't already answered
 SELECT CONCAT_WS(' ',m.firstname, m.surname) member_name, f.name facility,
@@ -99,7 +113,10 @@ WHERE
 	(m.memid != 0 AND b.slots * f.membercost > 30))
 ORDER BY cost DESC;
 
-/*How can you output a list of all members, including the individual who recommended them (if any), without using any joins? Ensure that there are no duplicates in the list, and that each firstname + surname pairing is formatted as a column and ordered.*/
+/*How can you output a list of all members, including the individual 
+who recommended them (if any), without using any joins? 
+Ensure that there are no duplicates in the list, 
+and that each firstname + surname pairing is formatted as a column and ordered.*/
 
 SELECT DISTINCT CONCAT_WS(' ',m.firstname, m.surname) member_name, 
 (SELECT CONCAT_WS(' ',r.firstname, r.surname) 
@@ -108,9 +125,15 @@ SELECT DISTINCT CONCAT_WS(' ',m.firstname, m.surname) member_name,
 FROM cd.members m
 ORDER BY member_name;
 
-/* The Produce a list of costly bookings exercise contained some messy logic: we had to calculate the booking cost in both the WHERE clause and the CASE statement. Try to simplify this calculation using subqueries. For reference, the question was:
+/* The Produce a list of costly bookings exercise contained some messy logic: 
+we had to calculate the booking cost in both the WHERE clause and the CASE statement. 
+Try to simplify this calculation using subqueries. For reference, the question was:
 
-How can you produce a list of bookings on the day of 2012-09-14 which will cost the member (or guest) more than $30? Remember that guests have different costs to members (the listed costs are per half-hour 'slot'), and the guest user is always ID 0. Include in your output the name of the facility, the name of the member formatted as a single column, and the cost. Order by descending cost. */
+How can you produce a list of bookings on the day of 2012-09-14 which will cost the member 
+(or guest) more than $30? Remember that guests have different costs to members 
+(the listed costs are per half-hour 'slot'), and the guest user is always ID 0. 
+Include in your output the name of the facility, the name of the member 
+formatted as a single column, and the cost. Order by descending cost. */
 
 --Looked at answer/help
 SELECT member_name, facility_name, cost
@@ -134,7 +157,8 @@ ORDER BY cost DESC;
 
 --Begin exercise set on aggregates
 
-/*For our first foray into aggregates, we're going to stick to something simple. We want to know how many facilities exist - simply produce a total count.*/
+/*For our first foray into aggregates, we're going to stick to something simple. 
+We want to know how many facilities exist - simply produce a total count.*/
 
 SELECT COUNT(facilities.facid) FROM cd.facilities;
 
@@ -142,21 +166,27 @@ SELECT COUNT(facilities.facid) FROM cd.facilities;
 SELECT COUNT(facilities.facid) FROM cd.facilities
 WHERE guestcost > 10;
 
-/*Produce a count of the number of recommendations each member has made. Order by member ID.*/
+/*Produce a count of the number of recommendations each member has made. 
+Order by member ID.*/
 
 SELECT  recommendedby, count(surname) FROM cd.members
 WHERE recommendedby NOTNULL
 GROUP BY recommendedby
 ORDER BY recommendedby;
 
-/*Produce a list of the total number of slots booked per facility. For now, just produce an output table consisting of facility id and slots, sorted by facility id.*/
+/*Produce a list of the total number of slots booked per facility. 
+For now, just produce an output table consisting of facility id and slots, 
+sorted by facility id.*/
 
 SELECT facid, sum(slots) FROM cd.bookings
 GROUP BY facid
 ORDER BY facid
 ;
 
-/*Produce a list of the total number of slots booked per facility in the month of September 2012. Produce an output table consisting of facility id and slots, sorted by the number of slots. */
+/*Produce a list of the total number of slots booked per facility 
+in the month of September 2012. 
+Produce an output table consisting of facility id and slots, 
+sorted by the number of slots. */
 
 SELECT facid, sum(slots) as total_slots FROM cd.bookings
 WHERE starttime >='2012-09-01' AND

@@ -84,3 +84,48 @@ Quit SQLite
 Also:
 * You can terminate the sqlite3 program by typing your systems End-Of-File character (usually a Control-D). 
 * Use the interrupt character (usually a Control-C) to stop a long-running SQL statement.
+
+##Case Expressions
+
+Simple CASE Expression:
+```
+SELECT Store_Name, CASE Store_Name
+  WHEN 'Los Angeles' THEN Sales * 2
+  WHEN 'San Diego' THEN Sales * 1.5
+  ELSE Sales
+  END
+"New Sales",
+Txn_Date
+FROM Store_Information;
+```
+Searched CASE Expression:
+```
+SELECT Store_Name, CASE
+  WHEN Store_Name = 'Los Angeles' THEN Sales * 2
+  WHEN Store_Name = 'San Diego' THEN Sales * 1.5
+  ELSE Sales
+  END
+"New Sales",
+Txn_Date
+FROM Store_Information;
+```
+##Evaluated vs. Keyed Order of Clauses
+
+The keyed-in order of a query’s clauses is:
+
+a.    SELECT
+b.    FROM
+c.    WHERE
+d.    GROUP BY
+e.    HAVING
+f.     ORDER BY
+
+But the logical query processing order is:
+
+a.    FROM
+b.    WHERE
+c.    GROUP BY
+d.    HAVING
+e.    SELECT -- column aliases created here
+f.    ORDER BY
+Source: http://sqlmag.com/blog/tip-apply-and-reuse-column-aliases
